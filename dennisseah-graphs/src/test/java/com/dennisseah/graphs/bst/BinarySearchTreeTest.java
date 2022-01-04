@@ -25,6 +25,7 @@ package com.dennisseah.graphs.bst;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -126,5 +127,40 @@ public class BinarySearchTreeTest {
          * Level-6....3
          */
         assertEquals(6, tree.height());
+    }
+
+    @Test
+    public void inbalanceFalseTest() {
+        BinarySearchTree<Integer> tree = new BinarySearchTree<Integer>();
+
+        for (int i : Arrays.asList(new Integer[] { 7, 1, 5, 6, 4, 2, 3, 8, 9 })) {
+            tree.insert(i);
+        }
+
+        /*
+         * Level-1......... 7
+         * ...............--^--
+         * Level-2....... 1....8
+         * ................\....\
+         * Level-3..........5....9
+         * ...............--^--
+         * Level-4........4....6
+         * ............../
+         * Level-5......2
+         * ............/
+         * Level-6....3
+         */
+        assertFalse(tree.isBalanced());
+    }
+
+    @Test
+    public void inbalanceTreeTest() {
+        BinarySearchTree<Integer> tree = new BinarySearchTree<Integer>();
+
+        for (int i : Arrays.asList(new Integer[] { 4, 2, 1, 3, 6, 5, 7 })) {
+            tree.insert(i);
+        }
+
+        assertTrue(tree.isBalanced());
     }
 }

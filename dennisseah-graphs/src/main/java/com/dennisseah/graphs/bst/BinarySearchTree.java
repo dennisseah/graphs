@@ -119,6 +119,15 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     /**
+     * Return true if the tree is balanced.
+     *
+     * @return true if the tree is balanced.
+     */
+    public boolean isBalanced() {
+        return isBalanced(root);
+    }
+
+    /**
      * Return a list of nodes after doing a in-order traversal.
      *
      * @return list of nodes
@@ -274,5 +283,15 @@ public class BinarySearchTree<T extends Comparable<T>> {
             parent.right = new BinarySearchTreeNode<>(values[rightIdx]);
             this.valuesInsert(parent.right, values, rightIdx);
         }
+    }
+
+    private boolean isBalanced(BinarySearchTreeNode<T> node) {
+        if (node == null) {
+            return true;
+        }
+        if (Math.abs(height(node.left) - height(node.right)) > 1) {
+            return false;
+        }
+        return isBalanced(node.left) && isBalanced(node.right);
     }
 }
