@@ -70,7 +70,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinarySearchTreeB
     }
 
     @Override
-    public boolean balanced() {
+    public boolean balance() {
         if (root == null || this.isBalanced()) {
             return false;
         }

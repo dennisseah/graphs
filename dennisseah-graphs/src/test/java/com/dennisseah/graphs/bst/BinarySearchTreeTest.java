@@ -203,14 +203,14 @@ public class BinarySearchTreeTest {
     @Test
     public void balanceFalseTest() {
         BinarySearchTree<Integer> tree = createTreeWithInsert(new Integer[] { 4, 2, 1, 3, 6, 5, 7 });
-        assertFalse(tree.balanced());
+        assertFalse(tree.balance());
     }
 
     @Test
     public void balanceTrueTest() {
         BinarySearchTree<Integer> tree = createTreeWithInsert(new Integer[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
         assertEquals(9, tree.height());
-        assertTrue(tree.balanced());
+        assertTrue(tree.balance());
         assertEquals(4, tree.height());
     }
 }

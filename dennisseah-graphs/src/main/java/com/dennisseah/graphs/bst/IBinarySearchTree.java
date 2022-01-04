@@ -68,5 +68,5 @@ interface IBinarySearchTree<T extends Comparable<T>> extends IBinarySearchTreeBa
      * 
      * @return true if actions are performed.
      */
-    boolean balanced();
+    boolean balance();
 }
