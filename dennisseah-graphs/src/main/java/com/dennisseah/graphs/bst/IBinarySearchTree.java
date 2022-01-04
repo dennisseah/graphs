@@ -61,4 +61,12 @@ interface IBinarySearchTree<T extends Comparable<T>> extends IBinarySearchTreeBa
      * @return true if tree is valid.
      */
     boolean isValid();
+
+    /**
+     * Balance the tree. There shall be no actions if the tree
+     * is already balanced.
+     * 
+     * @return true if actions are performed.
+     */
+    boolean balanced();
 }
