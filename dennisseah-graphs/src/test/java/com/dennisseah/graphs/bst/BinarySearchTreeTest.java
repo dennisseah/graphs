@@ -37,7 +37,7 @@ import org.junit.Test;
 public class BinarySearchTreeTest {
     private Function<BinarySearchTreeNode<Integer>, Integer> fnNodeValue = new Function<BinarySearchTreeNode<Integer>, Integer>() {
         public Integer apply(BinarySearchTreeNode<Integer> node) {
-            return node.value;
+            return node.getValue();
         }
     };
 

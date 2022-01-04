@@ -24,7 +24,7 @@
 package com.dennisseah.graphs.bst;
 
 public class BinarySearchTreeNode<T extends Comparable<T>> {
-    T value;
+    private T value;
     BinarySearchTreeNode<T> left;
     BinarySearchTreeNode<T> right;
 
@@ -47,7 +47,9 @@ public class BinarySearchTreeNode<T extends Comparable<T>> {
      * @param left  reference to left node.
      * @param right reference to right node.
      */
-    public BinarySearchTreeNode(T value, BinarySearchTreeNode<T> left,
+    public BinarySearchTreeNode(
+            T value,
+            BinarySearchTreeNode<T> left,
             BinarySearchTreeNode<T> right) {
         this.value = value;
         this.left = left;
@@ -67,8 +69,12 @@ public class BinarySearchTreeNode<T extends Comparable<T>> {
      * Set the node value.
      *
      * @param value node value.
+     * @throws NullValueException if node value is null
      */
-    public void setValue(T value) {
+    public void setValue(T value) throws NullValueException {
+        if (value == null) {
+            throw new NullValueException("Node value is required.");
+        }
         this.value = value;
     }
 

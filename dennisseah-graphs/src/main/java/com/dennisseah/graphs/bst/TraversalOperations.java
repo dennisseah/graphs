@@ -23,33 +23,14 @@
  */
 package com.dennisseah.graphs.bst;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class BinarySearchTree<T extends Comparable<T>> extends BinarySearchTreeBase<T> {
-    /**
-     * Construct a empty tree.
-     */
-    public BinarySearchTree() {
-        super();
-    }
+public class TraversalOperations<T extends Comparable<T>> {
+    private BinarySearchTreeNode<T> root;
 
-    /**
-     * Construct a binary search tree with an array of values.
-     * 
-     * @param values values for the nodes
-     * @throws InvalidBinaryTreeException if the constructed tree is invalid.
-     */
-    public BinarySearchTree(T[] values) throws InvalidBinaryTreeException {
-        super(values);
-    }
-
-    /**
-     * Return true if the tree is balanced.
-     *
-     * @return true if the tree is balanced.
-     */
-    public boolean isBalanced() {
-        return (new Validator<T>(this)).isBalanced();
+    public TraversalOperations(BinarySearchTreeNode<T> root) {
+        this.root = root;
     }
 
     /**
@@ -57,8 +38,10 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinarySearchTreeB
      *
      * @return list of nodes
      */
-    public List<BinarySearchTreeNode<T>> inorderTraversal() {
-        return (new TraversalOperations<T>(root)).inorderTraversal();
+    List<BinarySearchTreeNode<T>> inorderTraversal() {
+        List<BinarySearchTreeNode<T>> nodes = new ArrayList<>();
+        this.inorderTraversal(this.root, nodes);
+        return nodes;
     }
 
     /**
@@ -67,7 +50,9 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinarySearchTreeB
      * @return list of nodes
      */
     public List<BinarySearchTreeNode<T>> preorderTraversal() {
-        return (new TraversalOperations<T>(root)).preorderTraversal();
+        List<BinarySearchTreeNode<T>> nodes = new ArrayList<>();
+        this.preorderTraversal(this.root, nodes);
+        return nodes;
     }
 
     /**
@@ -76,16 +61,32 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinarySearchTreeB
      * @return list of nodes
      */
     public List<BinarySearchTreeNode<T>> postorderTraversal() {
-        return (new TraversalOperations<T>(root)).postorderTraversal();
+        List<BinarySearchTreeNode<T>> nodes = new ArrayList<>();
+        this.postorderTraversal(this.root, nodes);
+        return nodes;
     }
 
-    /**
-     * Return true if the tree is valid.
-     *
-     * @see Validator.isValid
-     * @return true if tree is valid.
-     */
-    public boolean isValid() {
-        return (new Validator<>(this)).isValid();
+    private void inorderTraversal(BinarySearchTreeNode<T> node, List<BinarySearchTreeNode<T>> nodes) {
+        if (node != null) {
+            this.inorderTraversal(node.left, nodes);
+            nodes.add(node);
+            this.inorderTraversal(node.right, nodes);
+        }
+    }
+
+    private void preorderTraversal(BinarySearchTreeNode<T> node, List<BinarySearchTreeNode<T>> nodes) {
+        if (node != null) {
+            nodes.add(node);
+            this.preorderTraversal(node.left, nodes);
+            this.preorderTraversal(node.right, nodes);
+        }
+    }
+
+    private void postorderTraversal(BinarySearchTreeNode<T> node, List<BinarySearchTreeNode<T>> nodes) {
+        if (node != null) {
+            this.postorderTraversal(node.left, nodes);
+            this.postorderTraversal(node.right, nodes);
+            nodes.add(node);
+        }
     }
 }
