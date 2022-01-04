@@ -25,46 +25,40 @@ package com.dennisseah.graphs.bst;
 
 import java.util.List;
 
-public class BinarySearchTree<T extends Comparable<T>> extends BinarySearchTreeBase<T> implements IBinarySearchTree<T> {
+interface IBinarySearchTree<T extends Comparable<T>> extends IBinarySearchTreeBase<T> {
     /**
-     * Construct a empty tree.
+     * Return true if the tree is balanced.
+     *
+     * @return true if the tree is balanced.
      */
-    public BinarySearchTree() {
-        super();
-    }
+    boolean isBalanced();
 
     /**
-     * Construct a binary search tree with an array of values.
-     * 
-     * @param values values for the nodes
-     * @throws InvalidBinaryTreeException if the constructed tree is invalid.
+     * Return a list of nodes after doing a in-order traversal.
+     *
+     * @return list of nodes
      */
-    public BinarySearchTree(T[] values) throws InvalidBinaryTreeException {
-        super(values);
-    }
+    List<BinarySearchTreeNode<T>> inorderTraversal();
 
-    @Override
-    public boolean isBalanced() {
-        return (new Validator<T>(this)).isBalanced();
-    }
+    /**
+     * Return a list of nodes after doing a pre-order traversal.
+     *
+     * @return list of nodes
+     */
+    List<BinarySearchTreeNode<T>> preorderTraversal();
 
-    @Override
-    public List<BinarySearchTreeNode<T>> inorderTraversal() {
-        return (new TraversalOperations<T>(root)).inorderTraversal();
-    }
+    /**
+     * Return a list of nodes after doing a post-order traversal.
+     *
+     * @return list of nodes
+     */
+    List<BinarySearchTreeNode<T>> postorderTraversal();
 
-    @Override
-    public List<BinarySearchTreeNode<T>> preorderTraversal() {
-        return (new TraversalOperations<T>(root)).preorderTraversal();
-    }
-
-    @Override
-    public List<BinarySearchTreeNode<T>> postorderTraversal() {
-        return (new TraversalOperations<T>(root)).postorderTraversal();
-    }
-
-    @Override
-    public boolean isValid() {
-        return (new Validator<>(this)).isValid();
-    }
+    /**
+     * Return true if the tree is valid.
+     *
+     * @see Validator.isValid
+     * @return true if tree is valid.
+     */
+    boolean isValid();
 }

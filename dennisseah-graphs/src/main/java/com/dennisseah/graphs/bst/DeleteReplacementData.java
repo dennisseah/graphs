@@ -23,13 +23,33 @@
  */
 package com.dennisseah.graphs.bst;
 
-public class InvalidBinaryTreeException extends Exception {
-    /**
-     * Instantiate an instance of this exception.
-     *
-     * @param message error message.
-     */
-    public InvalidBinaryTreeException(String message) {
-        super(message);
+class DeleteReplacementData<T extends Comparable<T>> {
+    BinarySearchTreeNode<T> locateReplacementNode(BinarySearchTreeNode<T> target) {
+        if (target.right == null) {
+            return target.left;
+        }
+        if (target.left == null) {
+            return target.right;
+        }
+        if (target.right.left == null) {
+            target.right.left = target.left;
+            return target.right;
+        }
+        return null;
+    }
+
+    T removeLeftmostNode(BinarySearchTreeNode<T> target) {
+        BinarySearchTreeNode<T> pprev = target.right;
+        BinarySearchTreeNode<T> prev = pprev.left;
+        BinarySearchTreeNode<T> cur = prev.left;
+
+        while (cur != null) {
+            pprev = prev;
+            prev = cur;
+            cur = cur.left;
+        }
+
+        pprev.left = prev.right;
+        return prev.getValue();
     }
 }

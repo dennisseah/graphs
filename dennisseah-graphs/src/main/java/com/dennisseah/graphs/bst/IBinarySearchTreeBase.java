@@ -25,46 +25,48 @@ package com.dennisseah.graphs.bst;
 
 import java.util.List;
 
-public class BinarySearchTree<T extends Comparable<T>> extends BinarySearchTreeBase<T> implements IBinarySearchTree<T> {
+public abstract interface IBinarySearchTreeBase<T extends Comparable<T>> {
     /**
-     * Construct a empty tree.
+     * Return the root node.
+     *
+     * @return root node
      */
-    public BinarySearchTree() {
-        super();
-    }
+    BinarySearchTreeNode<T> getRoot();
 
     /**
-     * Construct a binary search tree with an array of values.
+     * Set the root node
+     *
+     * @param root root node.
+     */
+    void setRoot(BinarySearchTreeNode<T> root);
+
+    /**
+     * Insert value into tree
+     *
+     * @param value node value.
+     */
+    void insert(T value);
+
+    /**
+     * Return a list of nodes that matches a given value.
+     *
+     * @param value value to match.
+     * @return list of matching nodes.
+     */
+    List<BinarySearchTreeNode<T>> find(T value);
+
+    /**
+     * Remove nodes from tree.
+     *
+     * @param value value to match.
+     * @return true if there are one or more nodes that are removed.
+     */
+    boolean remove(T value);
+
+    /**
+     * Return true if tree is valid.
      * 
-     * @param values values for the nodes
-     * @throws InvalidBinaryTreeException if the constructed tree is invalid.
+     * @return true if tree is valid.
      */
-    public BinarySearchTree(T[] values) throws InvalidBinaryTreeException {
-        super(values);
-    }
-
-    @Override
-    public boolean isBalanced() {
-        return (new Validator<T>(this)).isBalanced();
-    }
-
-    @Override
-    public List<BinarySearchTreeNode<T>> inorderTraversal() {
-        return (new TraversalOperations<T>(root)).inorderTraversal();
-    }
-
-    @Override
-    public List<BinarySearchTreeNode<T>> preorderTraversal() {
-        return (new TraversalOperations<T>(root)).preorderTraversal();
-    }
-
-    @Override
-    public List<BinarySearchTreeNode<T>> postorderTraversal() {
-        return (new TraversalOperations<T>(root)).postorderTraversal();
-    }
-
-    @Override
-    public boolean isValid() {
-        return (new Validator<>(this)).isValid();
-    }
+    abstract boolean isValid();
 }

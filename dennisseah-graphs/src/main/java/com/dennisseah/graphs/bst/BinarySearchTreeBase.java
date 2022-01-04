@@ -23,7 +23,10 @@
  */
 package com.dennisseah.graphs.bst;
 
-public abstract class BinarySearchTreeBase<T extends Comparable<T>> {
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class BinarySearchTreeBase<T extends Comparable<T>> implements IBinarySearchTreeBase<T> {
     BinarySearchTreeNode<T> root;
 
     /**
@@ -46,29 +49,17 @@ public abstract class BinarySearchTreeBase<T extends Comparable<T>> {
         }
     }
 
-    /**
-     * Return the root node.
-     *
-     * @return root node
-     */
+    @Override
     public BinarySearchTreeNode<T> getRoot() {
         return this.root;
     }
 
-    /**
-     * Set the root node
-     *
-     * @param root root node.
-     */
+    @Override
     public void setRoot(BinarySearchTreeNode<T> root) {
         this.root = root;
     }
 
-    /**
-     * Insert value into tree
-     *
-     * @param value node value.
-     */
+    @Override
     public void insert(T value) {
         BinarySearchTreeNode<T> node = new BinarySearchTreeNode<>(value);
 
@@ -79,7 +70,36 @@ public abstract class BinarySearchTreeBase<T extends Comparable<T>> {
         }
     }
 
-    public abstract boolean isValid();
+    @Override
+    public List<BinarySearchTreeNode<T>> find(T value) {
+        List<BinarySearchTreeNode<T>> nodes = new ArrayList<>();
+        this.find(this.root, value, nodes);
+        return nodes;
+    }
+
+    @Override
+    public boolean remove(T value) {
+        if (root == null) {
+            return false;
+        }
+        if (root.getValue().compareTo(value) == 0 &&
+                root.left == null && root.right == null) {
+            root = null;
+            return true;
+        }
+
+        BinarySearchTreeNode<T> dummy = new BinarySearchTreeNode<>(value);
+        dummy.left = root;
+        boolean removed = removeNode(dummy, value);
+        root = dummy.left;
+
+        boolean again = true; // this may be multiple node with the same value.
+        while (again) {
+            again = removeNode(dummy, value);
+        }
+
+        return removed;
+    }
 
     /**
      * Return height of the tree.
@@ -181,5 +201,61 @@ public abstract class BinarySearchTreeBase<T extends Comparable<T>> {
                 this.insert(parent.left, node);
             }
         }
+    }
+
+    private void find(BinarySearchTreeNode<T> node, T value, List<BinarySearchTreeNode<T>> nodes) {
+        if (node == null) {
+            return;
+        }
+        if (node.getValue().compareTo(value) == 0) {
+            nodes.add(node);
+        }
+        if (node.getValue().compareTo(value) >= 0) {
+            find(node.left, value, nodes);
+        } else {
+            find(node.right, value, nodes);
+        }
+    }
+
+    @SuppressWarnings("java:S3776")
+    private boolean removeNode(BinarySearchTreeNode<T> parent, T value) {
+        if (parent.left != null && parent.left.getValue().compareTo(value) == 0) {
+            if (parent.left.left == null && parent.left.right == null) {
+                parent.left = null;
+            } else {
+                DeleteReplacementData<T> data = new DeleteReplacementData<>();
+                BinarySearchTreeNode<T> replacementNode = data.locateReplacementNode(parent.left);
+                if (replacementNode != null) {
+                    parent.left = replacementNode;
+                } else {
+                    try {
+                        parent.left.setValue(data.removeLeftmostNode(parent.right));
+                    } catch (NullValueException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return true;
+        }
+        if (parent.right != null && parent.right.getValue().compareTo(value) == 0) {
+            if (parent.right.left == null && parent.right.right == null) {
+                parent.right = null;
+            } else {
+                DeleteReplacementData<T> data = new DeleteReplacementData<>();
+                BinarySearchTreeNode<T> replacementNode = data.locateReplacementNode(parent.right);
+                if (replacementNode != null) {
+                    parent.right = replacementNode;
+                } else {
+                    try {
+                        parent.right.setValue(data.removeLeftmostNode(parent.right));
+                    } catch (NullValueException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return true;
+        }
+        return (((parent.left != null) && removeNode(parent.left, value))
+                || ((parent.right != null) && removeNode(parent.right, value)));
     }
 }

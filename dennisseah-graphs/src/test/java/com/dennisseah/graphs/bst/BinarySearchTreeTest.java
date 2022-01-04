@@ -29,7 +29,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
 import org.junit.Test;
@@ -43,6 +43,14 @@ public class BinarySearchTreeTest {
 
     private BinarySearchTree<Integer> createTree(Integer[] values) throws InvalidBinaryTreeException {
         return new BinarySearchTree<Integer>(values);
+    }
+
+    private BinarySearchTree<Integer> createTreeWithInsert(Integer[] values) {
+        BinarySearchTree<Integer> tree = new BinarySearchTree<Integer>();
+        for (int i : values) {
+            tree.insert(i);
+        }
+        return tree;
     }
 
     @Test
@@ -94,24 +102,61 @@ public class BinarySearchTreeTest {
 
     @Test
     public void insertTest() {
-        BinarySearchTree<Integer> tree = new BinarySearchTree<Integer>();
-
-        for (int i : Arrays.asList(new Integer[] { 7, 1, 5, 6, 4, 2, 3 })) {
-            tree.insert(i);
-        }
-
+        BinarySearchTree<Integer> tree = createTreeWithInsert(new Integer[] { 7, 1, 5, 6, 4, 2, 3 });
         Integer[] expecteds = new Integer[] { 1, 2, 3, 4, 5, 6, 7 }; // sorted
         Object[] actuals = tree.inorderTraversal().stream().map(fnNodeValue).toArray();
         assertArrayEquals(expecteds, actuals);
     }
 
     @Test
-    public void heightTest() {
-        BinarySearchTree<Integer> tree = new BinarySearchTree<Integer>();
+    public void removeTest() {
+        BinarySearchTree<Integer> tree = createTreeWithInsert(new Integer[] { 7, 1, 5, 6, 4, 2, 3 });
+        assertTrue(tree.remove(3));
+    }
 
-        for (int i : Arrays.asList(new Integer[] { 7, 1, 5, 6, 4, 2, 3, 8, 9 })) {
-            tree.insert(i);
+    @Test
+    public void removeMultipleTest() {
+        BinarySearchTree<Integer> tree = createTreeWithInsert(new Integer[] { 7, 1, 5, 3, 6, 4, 2, 3 });
+        assertTrue(tree.remove(3));
+        Integer[] expecteds = new Integer[] { 1, 2, 4, 5, 6, 7 }; // sorted
+        Object[] actuals = tree.inorderTraversal().stream().map(fnNodeValue).toArray();
+        assertArrayEquals(expecteds, actuals);
+    }
+
+    @Test
+    public void removeNoneTest() {
+        BinarySearchTree<Integer> tree = createTreeWithInsert(new Integer[] { 7, 1, 5, 6, 4, 2, 3 });
+        assertFalse(tree.remove(13));
+    }
+
+    @Test
+    public void findOneTest() {
+        BinarySearchTree<Integer> tree = createTreeWithInsert(new Integer[] { 1, 2, 3, 4, 5, 6, 7 });
+        List<BinarySearchTreeNode<Integer>> found = tree.find(5);
+        assertEquals(1, found.size());
+        assertEquals(5, found.get(0).getValue().intValue());
+    }
+
+    @Test
+    public void findMultipleTest() {
+        BinarySearchTree<Integer> tree = createTreeWithInsert(new Integer[] { 1, 2, 3, 4, 5, 6, 7, 7, 7 });
+        List<BinarySearchTreeNode<Integer>> found = tree.find(7);
+        assertEquals(3, found.size());
+        for (BinarySearchTreeNode<Integer> node : found) {
+            assertEquals(7, node.getValue().intValue());
         }
+    }
+
+    @Test
+    public void findNoneTest() {
+        BinarySearchTree<Integer> tree = createTreeWithInsert(new Integer[] { 1, 2, 3, 4, 6, 7, 7, 7 });
+        List<BinarySearchTreeNode<Integer>> found = tree.find(5);
+        assertEquals(0, found.size());
+    }
+
+    @Test
+    public void heightTest() {
+        BinarySearchTree<Integer> tree = createTreeWithInsert(new Integer[] { 7, 1, 5, 6, 4, 2, 3, 8, 9 });
 
         /*
          * Level-1......... 7
@@ -131,11 +176,7 @@ public class BinarySearchTreeTest {
 
     @Test
     public void inbalanceFalseTest() {
-        BinarySearchTree<Integer> tree = new BinarySearchTree<Integer>();
-
-        for (int i : Arrays.asList(new Integer[] { 7, 1, 5, 6, 4, 2, 3, 8, 9 })) {
-            tree.insert(i);
-        }
+        BinarySearchTree<Integer> tree = createTreeWithInsert(new Integer[] { 7, 1, 5, 6, 4, 2, 3, 8, 9 });
 
         /*
          * Level-1......... 7
@@ -155,12 +196,7 @@ public class BinarySearchTreeTest {
 
     @Test
     public void inbalanceTreeTest() {
-        BinarySearchTree<Integer> tree = new BinarySearchTree<Integer>();
-
-        for (int i : Arrays.asList(new Integer[] { 4, 2, 1, 3, 6, 5, 7 })) {
-            tree.insert(i);
-        }
-
+        BinarySearchTree<Integer> tree = createTreeWithInsert(new Integer[] { 4, 2, 1, 3, 6, 5, 7 });
         assertTrue(tree.isBalanced());
     }
 }
