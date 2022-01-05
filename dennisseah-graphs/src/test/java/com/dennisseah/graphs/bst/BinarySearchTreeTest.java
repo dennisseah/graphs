@@ -46,7 +46,11 @@ public class BinarySearchTreeTest {
     }
 
     private BinarySearchTree<Integer> createTreeWithInsert(Integer[] values) {
-        BinarySearchTree<Integer> tree = new BinarySearchTree<Integer>();
+        return createTreeWithInsert(values, false);
+    }
+
+    private BinarySearchTree<Integer> createTreeWithInsert(Integer[] values, boolean uniqueNodeValues) {
+        BinarySearchTree<Integer> tree = new BinarySearchTree<Integer>(uniqueNodeValues);
         for (int i : values) {
             tree.insert(i);
         }
@@ -66,14 +70,25 @@ public class BinarySearchTreeTest {
     }
 
     @Test(expected = InvalidBinaryTreeException.class)
-    public void validCheckFalse() throws InvalidBinaryTreeException {
+    public void validCheckFalseTest() throws InvalidBinaryTreeException {
         createTree(new Integer[] { 1, 2, 3, 4, 5, 6, 7 });
     }
 
     @Test
-    public void validCheckTrue() throws InvalidBinaryTreeException {
+    public void validCheckTrueTest() throws InvalidBinaryTreeException {
         BinarySearchTree<Integer> tree = createTree(new Integer[] { 4, 2, 6, 1, 3, 5, 7 });
         assertTrue(tree.isValid());
+    }
+
+    @Test
+    public void uniqueNodesPositiveTest() throws InvalidBinaryTreeException {
+        BinarySearchTree<Integer> tree = createTree(new Integer[] { 4, 2, 6, 1, 3, 5, 7 });
+        assertTrue(tree.isValid());
+    }
+
+    @Test(expected = DuplicateValuesException.class)
+    public void uniqueNodesNegativeTest() throws DuplicateValuesException, InvalidBinaryTreeException {
+        new BinarySearchTree<Integer>(new Integer[] { 4, 2, 6, 2, 3, 5, 7 }, true);
     }
 
     @Test
@@ -103,6 +118,22 @@ public class BinarySearchTreeTest {
     @Test
     public void insertTest() {
         BinarySearchTree<Integer> tree = createTreeWithInsert(new Integer[] { 7, 1, 5, 6, 4, 2, 3 });
+        Integer[] expecteds = new Integer[] { 1, 2, 3, 4, 5, 6, 7 }; // sorted
+        Object[] actuals = tree.inorderTraversal().stream().map(fnNodeValue).toArray();
+        assertArrayEquals(expecteds, actuals);
+    }
+
+    @Test
+    public void insertDuplicateTest() {
+        BinarySearchTree<Integer> tree = createTreeWithInsert(new Integer[] { 7, 1, 5, 6, 4, 2, 3, 7 });
+        Integer[] expecteds = new Integer[] { 1, 2, 3, 4, 5, 6, 7, 7 }; // sorted
+        Object[] actuals = tree.inorderTraversal().stream().map(fnNodeValue).toArray();
+        assertArrayEquals(expecteds, actuals);
+    }
+
+    @Test
+    public void insertUniqueNodeValuesTest() {
+        BinarySearchTree<Integer> tree = createTreeWithInsert(new Integer[] { 7, 1, 5, 6, 4, 2, 3, 7 }, true);
         Integer[] expecteds = new Integer[] { 1, 2, 3, 4, 5, 6, 7 }; // sorted
         Object[] actuals = tree.inorderTraversal().stream().map(fnNodeValue).toArray();
         assertArrayEquals(expecteds, actuals);

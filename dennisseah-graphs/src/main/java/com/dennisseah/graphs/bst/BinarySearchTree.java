@@ -35,6 +35,15 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinarySearchTreeB
     }
 
     /**
+     * Construct a empty tree.
+     * 
+     * @param uniqueNodeValue true to have a tree with unique node values.
+     */
+    public BinarySearchTree(boolean uniqueNodeValue) {
+        super(uniqueNodeValue);
+    }
+
+    /**
      * Construct a binary search tree with an array of values.
      * 
      * @param values values for the nodes
@@ -42,6 +51,20 @@ public class BinarySearchTree<T extends Comparable<T>> extends BinarySearchTreeB
      */
     public BinarySearchTree(T[] values) throws InvalidBinaryTreeException {
         super(values);
+    }
+
+    /**
+     * Construct a binary search tree with an array of values.
+     * 
+     * @param values          values for the nodes
+     * @param uniqueNodeValue true to have a tree with unique node values.
+     * @throws InvalidBinaryTreeException if the constructed tree is invalid.
+     * @throws DuplicateValuesException   if there are duplcated values if
+     *                                    uniqueNodeValue is set.
+     */
+    public BinarySearchTree(T[] values, boolean uniqueNodeValue)
+            throws InvalidBinaryTreeException, DuplicateValuesException {
+        super(values, uniqueNodeValue);
     }
 
     @Override

@@ -24,10 +24,13 @@
 package com.dennisseah.graphs.bst;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class BinarySearchTreeBase<T extends Comparable<T>> implements IBinarySearchTreeBase<T> {
     BinarySearchTreeNode<T> root;
+    boolean uniqueNodeValue = false;
 
     /**
      * Construct a empty tree.
@@ -37,13 +40,45 @@ public abstract class BinarySearchTreeBase<T extends Comparable<T>> implements I
     }
 
     /**
+     * Construct a empty tree.
+     * 
+     * @param uniqueNodeValue true to have a tree with unique node values.
+     */
+    BinarySearchTreeBase(boolean uniqueNodeValue) {
+        this.root = null;
+        this.uniqueNodeValue = uniqueNodeValue;
+    }
+
+    /**
+     * Construct a binary search tree with an array of values.
+     * 
+     * @param values          values for the nodes
+     * @param uniqueNodeValue true to have a tree with unique node values.
+     * @throws InvalidBinaryTreeException if the constructed tree is invalid.
+     * @throws DuplicateValuesException   if there are duplcated values if
+     *                                    uniqueNodeValue is set.
+     */
+    BinarySearchTreeBase(T[] values, boolean uniqueNodeValue)
+            throws InvalidBinaryTreeException, DuplicateValuesException {
+        this.uniqueNodeValue = uniqueNodeValue;
+        this.root = this.build(values);
+        if (!this.isValid()) {
+            throw new InvalidBinaryTreeException("Tree is invalid");
+        }
+    }
+
+    /**
      * Construct a binary search tree with an array of values.
      * 
      * @param values values for the nodes
      * @throws InvalidBinaryTreeException if the constructed tree is invalid.
      */
     BinarySearchTreeBase(T[] values) throws InvalidBinaryTreeException {
-        this.root = this.build(values);
+        try {
+            this.root = this.build(values);
+        } catch (DuplicateValuesException e) {
+            // NO-ACTION
+        }
         if (!this.isValid()) {
             throw new InvalidBinaryTreeException("Tree is invalid");
         }
@@ -93,7 +128,7 @@ public abstract class BinarySearchTreeBase<T extends Comparable<T>> implements I
         boolean removed = removeNode(dummy, value);
         root = dummy.left;
 
-        boolean again = true; // this may be multiple node with the same value.
+        boolean again = removed && !this.uniqueNodeValue; // this may be multiple node with the same value.
         while (again) {
             again = removeNode(dummy, value);
         }
@@ -121,6 +156,19 @@ public abstract class BinarySearchTreeBase<T extends Comparable<T>> implements I
             return 0;
         }
         return 1 + Math.max(height(node.left), height(node.right));
+    }
+
+    private boolean hasDuplicates(T[] values) {
+        Map<T, Boolean> tracker = new HashMap<>();
+
+        for (T v : values) {
+            if (tracker.containsKey(v)) {
+                return true;
+            }
+            tracker.put(v, true);
+        }
+
+        return false;
     }
 
     /**
@@ -153,8 +201,13 @@ public abstract class BinarySearchTreeBase<T extends Comparable<T>> implements I
      * 
      * @param values values for the nodes
      * @return root of tree.
+     * @throws DuplicateValuesException if there are duplicated values
      */
-    private BinarySearchTreeNode<T> build(T[] values) {
+    private BinarySearchTreeNode<T> build(T[] values) throws DuplicateValuesException {
+        if (this.uniqueNodeValue && this.hasDuplicates(values)) {
+            throw new DuplicateValuesException("There are duplicate values.");
+        }
+
         BinarySearchTreeNode<T> newRoot = null;
 
         if (values != null && values.length > 0) {
@@ -188,6 +241,9 @@ public abstract class BinarySearchTreeBase<T extends Comparable<T>> implements I
     }
 
     private void insert(BinarySearchTreeNode<T> parent, BinarySearchTreeNode<T> node) {
+        if (this.uniqueNodeValue && (node.getValue().compareTo(parent.getValue()) == 0)) {
+            return;
+        }
         if (node.getValue().compareTo(parent.getValue()) > 0) {
             if (parent.right == null) {
                 parent.right = node;
